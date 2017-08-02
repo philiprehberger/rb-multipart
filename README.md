@@ -3,6 +3,7 @@
 [![Tests](https://github.com/philiprehberger/rb-multipart/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-multipart/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-multipart.svg)](https://rubygems.org/gems/philiprehberger-multipart)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-multipart)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Multipart/form-data request builder with file and field support
 
