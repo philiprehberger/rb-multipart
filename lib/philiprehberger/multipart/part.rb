@@ -7,7 +7,7 @@ module Philiprehberger
       # @return [Symbol] the field name
       attr_reader :name
 
-      # @return [String] the part value
+      # @return [String] the part value / body content
       attr_reader :value
 
       # @return [String, nil] the original filename
@@ -25,6 +25,13 @@ module Philiprehberger
         @value = value
         @filename = filename
         @content_type = content_type
+      end
+
+      # Alias for value — the body content of this part
+      #
+      # @return [String]
+      def body
+        @value
       end
 
       # Whether this part represents a file upload
