@@ -2,12 +2,7 @@
 
 [![Tests](https://github.com/philiprehberger/rb-multipart/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-multipart/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-multipart.svg)](https://rubygems.org/gems/philiprehberger-multipart)
-[![GitHub release](https://img.shields.io/github/v/release/philiprehberger/rb-multipart)](https://github.com/philiprehberger/rb-multipart/releases)
 [![Last updated](https://img.shields.io/github/last-commit/philiprehberger/rb-multipart)](https://github.com/philiprehberger/rb-multipart/commits/main)
-[![License](https://img.shields.io/github/license/philiprehberger/rb-multipart)](LICENSE)
-[![Bug Reports](https://img.shields.io/github/issues/philiprehberger/rb-multipart/bug)](https://github.com/philiprehberger/rb-multipart/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Feature Requests](https://img.shields.io/github/issues/philiprehberger/rb-multipart/enhancement)](https://github.com/philiprehberger/rb-multipart/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
-[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Multipart/form-data builder and parser with MIME type detection and streaming support
 
@@ -140,10 +135,21 @@ bundle exec rubocop
 
 ## Support
 
-If you find this package useful, consider giving it a star on GitHub — it helps motivate continued maintenance and development.
+If you find this project useful:
 
-[![LinkedIn](https://img.shields.io/badge/Philip%20Rehberger-LinkedIn-0A66C2?logo=linkedin)](https://www.linkedin.com/in/philiprehberger)
-[![More packages](https://img.shields.io/badge/more-open%20source%20packages-blue)](https://philiprehberger.com/open-source-packages)
+⭐ [Star the repo](https://github.com/philiprehberger/rb-multipart)
+
+🐛 [Report issues](https://github.com/philiprehberger/rb-multipart/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+
+💡 [Suggest features](https://github.com/philiprehberger/rb-multipart/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+
+❤️ [Sponsor development](https://github.com/sponsors/philiprehberger)
+
+🌐 [All Open Source Projects](https://philiprehberger.com/open-source-packages)
+
+💻 [GitHub Profile](https://github.com/philiprehberger)
+
+🔗 [LinkedIn Profile](https://www.linkedin.com/in/philiprehberger)
 
 ## License
 
