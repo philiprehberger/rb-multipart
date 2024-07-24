@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-11
+
+### Added
+- `Builder#write_to(io)` for streaming multipart body to IO objects without buffering
+- `Builder#content_length` for calculating body byte size for Content-Length headers
+
+### Changed
+- `Builder#headers` now returns both Content-Type and Content-Length
+
 ## [0.2.1] - 2026-03-31
 
 ### Changed
