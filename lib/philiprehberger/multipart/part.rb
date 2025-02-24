@@ -8,13 +8,13 @@ module Philiprehberger
       attr_reader :name
 
       # @return [String] the part value / body content
-      attr_reader :value
+      attr_accessor :value
 
       # @return [String, nil] the original filename
-      attr_reader :filename
+      attr_accessor :filename
 
       # @return [String, nil] the content type
-      attr_reader :content_type
+      attr_accessor :content_type
 
       # @param name [Symbol] the field name
       # @param value [String] the part value

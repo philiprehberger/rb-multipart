@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-16
+
+### Added
+- `Builder#part(name)` returns the first `Part` previously added with the matching name (or `nil` if absent)
+- Symbol and String lookups are equivalent — enables post-construction tweaks like `builder.part('avatar').content_type = 'image/webp'`
+- `Part#value`, `Part#filename`, and `Part#content_type` are now writable (backwards-compatible readers remain)
+
 ## [0.3.0] - 2026-04-11
 
 ### Added

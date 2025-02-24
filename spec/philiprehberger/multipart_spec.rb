@@ -453,6 +453,64 @@ RSpec.describe Philiprehberger::Multipart do
         expect(builder.parts).to eq([])
       end
     end
+
+    describe '#part' do
+      it 'returns the first part with the matching name (symbol lookup)' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:name, 'Alice')
+        builder.field(:email, 'alice@example.com')
+
+        found = builder.part(:name)
+        expect(found).to be_a(Philiprehberger::Multipart::Part)
+        expect(found.value).to eq('Alice')
+      end
+
+      it 'returns the first part with the matching name (string lookup)' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:name, 'Alice')
+
+        expect(builder.part('name').value).to eq('Alice')
+      end
+
+      it 'treats symbol and string lookups as equivalent' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:key, 'value')
+
+        expect(builder.part(:key)).to equal(builder.part('key'))
+      end
+
+      it 'returns nil when no part matches' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:name, 'Alice')
+
+        expect(builder.part(:missing)).to be_nil
+      end
+
+      it 'returns the first match when duplicate names exist' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:tag, 'first')
+        builder.field(:tag, 'second')
+
+        expect(builder.part(:tag).value).to eq('first')
+      end
+
+      it 'allows post-construction content_type tweaks that appear in #to_s' do
+        tmpfile = Tempfile.new(['avatar', '.png'])
+        tmpfile.write('IMG')
+        tmpfile.close
+
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.file(:avatar, tmpfile.path, content_type: 'image/png')
+
+        builder.part('avatar').content_type = 'image/webp'
+
+        body = builder.to_s
+        expect(body).to include('Content-Type: image/webp')
+        expect(body).not_to include('Content-Type: image/png')
+      ensure
+        tmpfile&.unlink
+      end
+    end
   end
 
   describe Philiprehberger::Multipart::Part do

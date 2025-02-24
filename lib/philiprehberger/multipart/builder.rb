@@ -50,6 +50,19 @@ module Philiprehberger
         self
       end
 
+      # Look up the first part previously added with the given name.
+      #
+      # Allows post-construction tweaks, e.g.
+      # `builder.part('avatar').content_type = 'image/webp'`.
+      # String and Symbol lookups are equivalent.
+      #
+      # @param name [Symbol, String] the field name to look up
+      # @return [Part, nil] the first matching Part, or nil if absent
+      def part(name)
+        needle = name.to_s
+        @parts.find { |p| p.name.to_s == needle }
+      end
+
       # Render the complete multipart body as a string
       #
       # @return [String]

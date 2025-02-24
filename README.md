@@ -111,6 +111,25 @@ builder.content_length  # => 1234
 builder.headers         # => { "Content-Type" => "multipart/form-data; boundary=...", "Content-Length" => "1234" }
 ```
 
+### Post-Construction Part Lookup
+
+```ruby
+builder = Philiprehberger::Multipart.build do
+  field :name, 'Alice'
+  file :avatar, '/path/to/photo.png'
+end
+
+# Look up a part by name (String or Symbol both work)
+builder.part(:avatar)   # => #<Part name=:avatar ...>
+builder.part('avatar')  # => same Part
+
+# Tweak attributes after the fact — changes flow through to #to_s
+builder.part('avatar').content_type = 'image/webp'
+
+# Returns nil when no part matches
+builder.part(:missing)  # => nil
+```
+
 ### Custom Boundary
 
 ```ruby
@@ -130,6 +149,7 @@ builder.content_type  # => "multipart/form-data; boundary=my-boundary"
 | `MimeTypes.lookup(filename)` | Look up MIME type from a filename extension |
 | `Builder#field(name, value)` | Add a text field |
 | `Builder#file(name, path_or_io, filename:, content_type:)` | Add a file from path or IO object |
+| `Builder#part(name)` | Look up the first part with a matching name (Symbol or String), or nil |
 | `Builder#to_s` | Render the multipart body as a string |
 | `Builder#content_type` | Content-Type header value with boundary |
 | `Builder#boundary` | The multipart boundary string |
