@@ -63,6 +63,16 @@ module Philiprehberger
         @parts.find { |p| p.name.to_s == needle }
       end
 
+      # List part names in the order they were added.
+      #
+      # Duplicates are preserved (this is a list, not a set). The returned
+      # array is a fresh copy — mutating it does not affect the builder.
+      #
+      # @return [Array<String>] part names in insertion order
+      def field_names
+        @parts.map { |p| p.name.to_s }
+      end
+
       # Render the complete multipart body as a string
       #
       # @return [String]

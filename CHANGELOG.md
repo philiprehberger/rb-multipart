@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-04-19
+
+### Added
+- `Builder#field_names` — array of part names in insertion order for quick introspection
+
 ## [0.4.0] - 2026-04-16
 
 ### Added
