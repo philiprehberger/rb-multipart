@@ -24,7 +24,6 @@ module Philiprehberger
       # @return [Array<Part>] parsed parts
       def parse
         delimiter = "--#{@boundary}"
-        closing = "#{delimiter}--"
 
         raw = @body.split(delimiter)
         raw.shift # discard preamble before first boundary
