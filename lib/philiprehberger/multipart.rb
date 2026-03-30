@@ -2,8 +2,10 @@
 
 require 'securerandom'
 require_relative 'multipart/version'
+require_relative 'multipart/mime_types'
 require_relative 'multipart/part'
 require_relative 'multipart/builder'
+require_relative 'multipart/parser'
 
 module Philiprehberger
   module Multipart
@@ -22,6 +24,16 @@ module Philiprehberger
       builder = Builder.new(boundary: boundary)
       builder.instance_eval(&block)
       builder
+    end
+
+    # Parse a multipart/form-data body into Part objects
+    #
+    # @param body [String] the raw multipart body
+    # @param content_type [String] the Content-Type header value (must include boundary)
+    # @return [Array<Part>] parsed parts
+    # @raise [Error] if the boundary cannot be extracted or the body is malformed
+    def self.parse(body, content_type:)
+      Parser.parse(body, content_type: content_type)
     end
   end
 end

@@ -8,9 +8,10 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Philip Rehberger']
   spec.email         = ['me@philiprehberger.com']
 
-  spec.summary       = 'Multipart/form-data request builder with file and field support'
-  spec.description   = 'Build multipart/form-data request bodies with a clean DSL for adding text fields ' \
-                       'and file uploads, including boundary generation and content type headers.'
+  spec.summary       = 'Multipart/form-data builder and parser with MIME type detection and streaming support'
+  spec.description   = 'Build and parse multipart/form-data request bodies with a clean DSL for adding text fields ' \
+                       'and file uploads, including automatic MIME type detection, IO streaming, boundary generation, ' \
+                       'and content type headers.'
   spec.homepage      = 'https://github.com/philiprehberger/rb-multipart'
   spec.license       = 'MIT'
 

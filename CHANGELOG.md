@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-03-29
+
+### Added
+- Content-Type guessing via `MimeTypes.lookup(filename)` with 100+ built-in extension mappings
+- Auto-detect MIME type from filename when `content_type:` is not provided in `file()` calls
+- Streaming file support: `Builder#file` now accepts IO objects (StringIO, File, etc.) in addition to file paths
+- Multipart parsing via `Multipart.parse(body, content_type:)` to parse incoming multipart/form-data bodies
+- `Parser` class for parsing raw multipart bodies into `Part` objects
+- `Part#body` accessor as alias for `Part#value`
+- GitHub issue templates, PR template, and Dependabot configuration
+
 ## [0.1.3] - 2026-03-24
 
 ### Fixed

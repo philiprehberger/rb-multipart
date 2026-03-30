@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'part'
+require_relative 'mime_types'
 
 module Philiprehberger
   module Multipart
@@ -30,17 +31,22 @@ module Philiprehberger
 
       # Add a file field
       #
+      # Accepts either a file path (String) or an IO object (responds to :read).
+      # When passing an IO object, the `filename:` keyword is required.
+      # Content type is auto-detected from the filename when not provided.
+      #
       # @param name [Symbol, String] the field name
-      # @param path [String] the file path
-      # @param content_type [String] the MIME content type
+      # @param path_or_io [String, #read] the file path or IO object
+      # @param filename [String, nil] override filename (required for IO objects)
+      # @param content_type [String, nil] the MIME content type (auto-detected if nil)
       # @return [self]
-      # @raise [Error] if the file does not exist
-      def file(name, path, content_type: 'application/octet-stream')
-        raise Error, "File not found: #{path}" unless File.exist?(path)
-
-        content = File.binread(path)
-        filename = File.basename(path)
-        @parts << Part.new(name, content, filename: filename, content_type: content_type)
+      # @raise [Error] if the file does not exist (path mode) or filename is missing (IO mode)
+      def file(name, path_or_io, filename: nil, content_type: nil)
+        if path_or_io.respond_to?(:read)
+          add_io_file(name, path_or_io, filename, content_type)
+        else
+          add_path_file(name, path_or_io, filename, content_type)
+        end
         self
       end
 
@@ -67,6 +73,23 @@ module Philiprehberger
       end
 
       private
+
+      def add_path_file(name, path, filename, content_type)
+        raise Error, "File not found: #{path}" unless File.exist?(path)
+
+        resolved_filename = filename || File.basename(path)
+        resolved_content_type = content_type || MimeTypes.lookup(resolved_filename)
+        content = File.binread(path)
+        @parts << Part.new(name, content, filename: resolved_filename, content_type: resolved_content_type)
+      end
+
+      def add_io_file(name, io, filename, content_type)
+        raise Error, 'filename: is required when passing an IO object' unless filename
+
+        resolved_content_type = content_type || MimeTypes.lookup(filename)
+        content = io.read
+        @parts << Part.new(name, content, filename: filename, content_type: resolved_content_type)
+      end
 
       def generate_boundary
         "----PhiliprehbergerMultipart#{SecureRandom.hex(16)}"
