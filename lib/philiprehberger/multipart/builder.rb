@@ -65,11 +65,35 @@ module Philiprehberger
         "multipart/form-data; boundary=#{@boundary}"
       end
 
+      # Stream the multipart body to an IO object
+      #
+      # Writes each part directly to the IO without building the full body
+      # string in memory. Useful for large file uploads.
+      #
+      # @param io [#write] the IO object to write to
+      # @return [#write] the IO object
+      def write_to(io)
+        @parts.each { |part| io.write(part.to_s(@boundary)) }
+        io.write("--#{@boundary}--\r\n")
+        io
+      end
+
+      # Calculate the byte size of the multipart body
+      #
+      # @return [Integer] the body size in bytes
+      def content_length
+        size = @parts.sum { |part| part.to_s(@boundary).bytesize }
+        size + "--#{@boundary}--\r\n".bytesize
+      end
+
       # Return the headers hash for the request
       #
       # @return [Hash]
       def headers
-        { 'Content-Type' => content_type }
+        {
+          'Content-Type' => content_type,
+          'Content-Length' => content_length.to_s
+        }
       end
 
       private

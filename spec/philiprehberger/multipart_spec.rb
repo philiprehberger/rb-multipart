@@ -351,15 +351,99 @@ RSpec.describe Philiprehberger::Multipart do
       end
     end
 
-    describe '#headers' do
-      it 'returns a hash with Content-Type' do
+    describe '#write_to' do
+      it 'produces the same output as #to_s' do
         builder = described_class.new(boundary: 'BOUNDARY')
-        expect(builder.headers).to eq({ 'Content-Type' => 'multipart/form-data; boundary=BOUNDARY' })
+        builder.field(:name, 'Alice')
+        builder.field(:email, 'alice@example.com')
+
+        io = StringIO.new
+        builder.write_to(io)
+        expect(io.string).to eq(builder.to_s)
+      end
+
+      it 'returns the IO object' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:key, 'value')
+
+        io = StringIO.new
+        result = builder.write_to(io)
+        expect(result).to equal(io)
+      end
+
+      it 'works with an empty builder' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        io = StringIO.new
+        builder.write_to(io)
+        expect(io.string).to eq("--BOUNDARY--\r\n")
+      end
+
+      it 'streams file content correctly' do
+        tmpfile = Tempfile.new(['stream', '.txt'])
+        tmpfile.write('streamed data')
+        tmpfile.close
+
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.file(:upload, tmpfile.path, content_type: 'text/plain')
+
+        io = StringIO.new
+        builder.write_to(io)
+        expect(io.string).to include('streamed data')
+        expect(io.string).to eq(builder.to_s)
+      ensure
+        tmpfile&.unlink
+      end
+    end
+
+    describe '#content_length' do
+      it 'matches #to_s.bytesize' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:name, 'Alice')
+        builder.field(:count, '42')
+
+        expect(builder.content_length).to eq(builder.to_s.bytesize)
+      end
+
+      it 'returns closing boundary size for empty builder' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        expect(builder.content_length).to eq("--BOUNDARY--\r\n".bytesize)
+      end
+
+      it 'handles binary content correctly' do
+        tmpfile = Tempfile.new(['bin', '.dat'])
+        tmpfile.binmode
+        tmpfile.write("\x00\x01\xFF\xFE")
+        tmpfile.close
+
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.file(:upload, tmpfile.path)
+
+        expect(builder.content_length).to eq(builder.to_s.bytesize)
+      ensure
+        tmpfile&.unlink
+      end
+    end
+
+    describe '#headers' do
+      it 'includes both Content-Type and Content-Length' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:key, 'value')
+
+        headers = builder.headers
+        expect(headers).to have_key('Content-Type')
+        expect(headers).to have_key('Content-Length')
       end
 
       it 'includes boundary in Content-Type header' do
         builder = described_class.new(boundary: 'my-custom-boundary')
         expect(builder.headers['Content-Type']).to include('my-custom-boundary')
+      end
+
+      it 'has Content-Length matching actual body size' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:name, 'Alice')
+
+        expect(builder.headers['Content-Length']).to eq(builder.to_s.bytesize.to_s)
       end
     end
 

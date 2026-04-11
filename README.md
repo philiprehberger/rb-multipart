@@ -95,6 +95,22 @@ parts.first.body          # => "value"
 parts.first.file?         # => false
 ```
 
+### Streaming Output
+
+```ruby
+builder = Philiprehberger::Multipart.build do
+  field :name, 'Alice'
+  file :avatar, '/path/to/photo.png'
+end
+
+# Stream directly to a file or socket without buffering the full body
+File.open('body.dat', 'wb') { |f| builder.write_to(f) }
+
+# Content-Length for HTTP headers
+builder.content_length  # => 1234
+builder.headers         # => { "Content-Type" => "multipart/form-data; boundary=...", "Content-Length" => "1234" }
+```
+
 ### Custom Boundary
 
 ```ruby
@@ -117,7 +133,9 @@ builder.content_type  # => "multipart/form-data; boundary=my-boundary"
 | `Builder#to_s` | Render the multipart body as a string |
 | `Builder#content_type` | Content-Type header value with boundary |
 | `Builder#boundary` | The multipart boundary string |
-| `Builder#headers` | Hash with Content-Type header |
+| `Builder#write_to(io)` | Stream the multipart body to an IO object |
+| `Builder#content_length` | Byte size of the body for Content-Length headers |
+| `Builder#headers` | Hash with Content-Type and Content-Length headers |
 | `Part#name` | The field name |
 | `Part#value` | The part value / body content |
 | `Part#body` | Alias for value |
