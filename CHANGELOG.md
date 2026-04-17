@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-20
+
+### Added
+- `Builder#merge(other)` — append the parts of another builder onto this one without re-encoding them. The receiver's boundary is retained and only part references are copied, so large file bodies aren't duplicated in memory.
+
 ## [0.5.0] - 2026-04-19
 
 ### Added

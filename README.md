@@ -161,6 +161,7 @@ builder.content_type  # => "multipart/form-data; boundary=my-boundary"
 | `Builder#file(name, path_or_io, filename:, content_type:)` | Add a file from path or IO object |
 | `Builder#part(name)` | Look up the first part with a matching name (Symbol or String), or nil |
 | `Builder#field_names` | Array of part names (as strings) in insertion order |
+| `Builder#merge(other)` | Append parts from another `Builder` without re-encoding |
 | `Builder#to_s` | Render the multipart body as a string |
 | `Builder#content_type` | Content-Type header value with boundary |
 | `Builder#boundary` | The multipart boundary string |
