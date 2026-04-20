@@ -111,6 +111,16 @@ builder.content_length  # => 1234
 builder.headers         # => { "Content-Type" => "multipart/form-data; boundary=...", "Content-Length" => "1234" }
 ```
 
+### Listing Field Names
+
+```ruby
+builder = Philiprehberger::Multipart.build do |b|
+  b.field("name", "Alice")
+  b.file("avatar", "avatar.png")
+end
+builder.field_names # => ["name", "avatar"]
+```
+
 ### Post-Construction Part Lookup
 
 ```ruby
@@ -150,6 +160,7 @@ builder.content_type  # => "multipart/form-data; boundary=my-boundary"
 | `Builder#field(name, value)` | Add a text field |
 | `Builder#file(name, path_or_io, filename:, content_type:)` | Add a file from path or IO object |
 | `Builder#part(name)` | Look up the first part with a matching name (Symbol or String), or nil |
+| `Builder#field_names` | Array of part names (as strings) in insertion order |
 | `Builder#to_s` | Render the multipart body as a string |
 | `Builder#content_type` | Content-Type header value with boundary |
 | `Builder#boundary` | The multipart boundary string |

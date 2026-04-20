@@ -454,6 +454,52 @@ RSpec.describe Philiprehberger::Multipart do
       end
     end
 
+    describe '#field_names' do
+      it 'returns an empty array for a fresh builder' do
+        builder = described_class.new
+        expect(builder.field_names).to eq([])
+      end
+
+      it 'returns a single field name' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:token, 'abc')
+
+        expect(builder.field_names).to eq(['token'])
+      end
+
+      it 'preserves insertion order across fields and files' do
+        tmpfile = Tempfile.new(['order', '.txt'])
+        tmpfile.write('data')
+        tmpfile.close
+
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:name, 'Alice')
+        builder.file(:avatar, tmpfile.path, content_type: 'text/plain')
+        builder.field(:tag, 'important')
+
+        expect(builder.field_names).to eq(%w[name avatar tag])
+      ensure
+        tmpfile&.unlink
+      end
+
+      it 'preserves duplicate names' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:tag, 'first')
+        builder.field(:tag, 'second')
+
+        expect(builder.field_names).to eq(%w[tag tag])
+      end
+
+      it 'returns a fresh array that does not mutate builder state' do
+        builder = described_class.new(boundary: 'BOUNDARY')
+        builder.field(:name, 'Alice')
+
+        builder.field_names << 'x'
+        expect(builder.field_names).not_to include('x')
+        expect(builder.field_names).to eq(['name'])
+      end
+    end
+
     describe '#part' do
       it 'returns the first part with the matching name (symbol lookup)' do
         builder = described_class.new(boundary: 'BOUNDARY')
