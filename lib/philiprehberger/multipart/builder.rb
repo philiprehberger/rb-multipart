@@ -73,6 +73,20 @@ module Philiprehberger
         @parts.map { |p| p.name.to_s }
       end
 
+      # Append parts from another builder onto this one, preserving their
+      # existing `Part` objects so file contents are not re-encoded. The
+      # receiver's boundary is kept; only `other`'s parts are copied.
+      #
+      # @param other [Builder] the builder whose parts should be appended
+      # @return [self]
+      # @raise [Error] if `other` is not a `Builder`
+      def merge(other)
+        raise Error, 'merge requires a Builder' unless other.is_a?(Builder)
+
+        @parts.concat(other.parts)
+        self
+      end
+
       # Render the complete multipart body as a string
       #
       # @return [String]

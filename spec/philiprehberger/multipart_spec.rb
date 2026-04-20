@@ -827,5 +827,52 @@ RSpec.describe Philiprehberger::Multipart do
         expect(parts.first.filename).to eq('stream.txt')
       end
     end
+
+    describe '#merge' do
+      it 'appends parts from another builder preserving insertion order' do
+        a = Philiprehberger::Multipart::Builder.new(boundary: 'AAA')
+        a.field(:name, 'Alice')
+
+        b = Philiprehberger::Multipart::Builder.new(boundary: 'BBB')
+        b.field(:email, 'alice@example.com')
+        b.field(:role, 'admin')
+
+        a.merge(b)
+
+        expect(a.field_names).to eq(%w[name email role])
+      end
+
+      it 'reuses the original Part objects without re-encoding' do
+        source = Philiprehberger::Multipart::Builder.new
+        source.field(:shared, 'value')
+        original_part = source.parts.first
+
+        destination = Philiprehberger::Multipart::Builder.new
+        destination.merge(source)
+
+        expect(destination.parts.first).to be(original_part)
+      end
+
+      it 'keeps the receiving builder boundary' do
+        a = Philiprehberger::Multipart::Builder.new(boundary: 'AAA')
+        a.field(:name, 'Alice')
+        b = Philiprehberger::Multipart::Builder.new(boundary: 'BBB')
+        b.field(:email, 'alice@example.com')
+
+        a.merge(b)
+        expect(a.boundary).to eq('AAA')
+      end
+
+      it 'returns self for chaining' do
+        a = Philiprehberger::Multipart::Builder.new
+        b = Philiprehberger::Multipart::Builder.new
+        expect(a.merge(b)).to be(a)
+      end
+
+      it 'raises Error when merging a non-Builder' do
+        a = Philiprehberger::Multipart::Builder.new
+        expect { a.merge({}) }.to raise_error(Philiprehberger::Multipart::Error, /Builder/)
+      end
+    end
   end
 end
