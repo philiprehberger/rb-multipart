@@ -140,6 +140,25 @@ builder.part('avatar').content_type = 'image/webp'
 builder.part(:missing)  # => nil
 ```
 
+### Inspecting the Builder
+
+```ruby
+builder = Philiprehberger::Multipart.build do
+  field :name, 'Alice'
+  file :avatar, '/path/to/photo.png'
+end
+
+builder.size  # => same as builder.content_length
+builder.to_h
+# => {
+#      boundary: "----PhiliprehbergerMultipart...",
+#      parts: [
+#        { name: "name",   filename: nil,            content_type: nil,         size: 5 },
+#        { name: "avatar", filename: "photo.png",    content_type: "image/png", size: 4096 }
+#      ]
+#    }
+```
+
 ### Custom Boundary
 
 ```ruby
@@ -167,6 +186,8 @@ builder.content_type  # => "multipart/form-data; boundary=my-boundary"
 | `Builder#boundary` | The multipart boundary string |
 | `Builder#write_to(io)` | Stream the multipart body to an IO object |
 | `Builder#content_length` | Byte size of the body for Content-Length headers |
+| `Builder#size` | Alias for `content_length` |
+| `Builder#to_h` | Structured `{ boundary:, parts: [...] }` summary |
 | `Builder#headers` | Hash with Content-Type and Content-Length headers |
 | `Part#name` | The field name |
 | `Part#value` | The part value / body content |
@@ -174,6 +195,8 @@ builder.content_type  # => "multipart/form-data; boundary=my-boundary"
 | `Part#filename` | The original filename (nil for text fields) |
 | `Part#content_type` | The MIME content type (nil for text fields) |
 | `Part#file?` | Whether this part is a file upload |
+| `Part#text?` | Whether this part is a plain text field (inverse of `file?`) |
+| `Part#size` | Byte size of the part's value |
 
 ## Development
 

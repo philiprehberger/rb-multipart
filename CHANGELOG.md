@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-04-30
+
+### Added
+- `Builder#size` — alias for `content_length`, matching the familiar Ruby `size` idiom
+- `Builder#to_h` — structured `{ boundary:, parts: [...] }` summary of the builder for logging and debugging
+- `Part#text?` — predicate, true when a part has no filename (inverse of `file?`)
+- `Part#size` — byte size of the part's value
+
 ## [0.6.0] - 2026-04-20
 
 ### Added

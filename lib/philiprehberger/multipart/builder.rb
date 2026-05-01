@@ -123,6 +123,32 @@ module Philiprehberger
         size + "--#{@boundary}--\r\n".bytesize
       end
 
+      # Alias for {#content_length} matching the familiar Ruby `size` idiom.
+      #
+      # @return [Integer]
+      alias size content_length
+
+      # Inspect the builder state as a structured hash.
+      #
+      # Each entry in `:parts` summarizes a single part with its name,
+      # filename (or nil for text fields), content_type, and byte size.
+      # Useful for logging or debugging without dumping the full body.
+      #
+      # @return [Hash] `{ boundary:, parts: [{ name:, filename:, content_type:, size: }, ...] }`
+      def to_h
+        {
+          boundary: @boundary,
+          parts: @parts.map do |part|
+            {
+              name: part.name.to_s,
+              filename: part.filename,
+              content_type: part.content_type,
+              size: part.size
+            }
+          end
+        }
+      end
+
       # Return the headers hash for the request
       #
       # @return [Hash]

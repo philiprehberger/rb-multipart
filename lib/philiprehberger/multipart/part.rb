@@ -41,6 +41,20 @@ module Philiprehberger
         !@filename.nil?
       end
 
+      # Whether this part is a plain text field (not a file upload)
+      #
+      # @return [Boolean]
+      def text?
+        !file?
+      end
+
+      # Byte size of this part's value
+      #
+      # @return [Integer]
+      def size
+        @value.bytesize
+      end
+
       # Render this part as a multipart body segment
       #
       # @param boundary [String] the multipart boundary

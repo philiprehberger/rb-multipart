@@ -874,5 +874,59 @@ RSpec.describe Philiprehberger::Multipart do
         expect { a.merge({}) }.to raise_error(Philiprehberger::Multipart::Error, /Builder/)
       end
     end
+
+    describe '#size' do
+      it 'is an alias for content_length' do
+        builder = Philiprehberger::Multipart.build do
+          field :name, 'Alice'
+        end
+        expect(builder.size).to eq(builder.content_length)
+      end
+    end
+
+    describe '#to_h' do
+      it 'returns a structured summary of the parts' do
+        builder = Philiprehberger::Multipart.build do
+          field :name, 'Alice'
+          field :email, 'alice@example.com'
+        end
+
+        h = builder.to_h
+        expect(h[:boundary]).to eq(builder.boundary)
+        expect(h[:parts].length).to eq(2)
+        expect(h[:parts].first).to include(name: 'name', filename: nil)
+        expect(h[:parts].first[:size]).to be > 0
+      end
+
+      it 'includes filename and content_type for file parts' do
+        builder = Philiprehberger::Multipart.build do
+          field :note, 'hello'
+          file :payload, StringIO.new('binary'), filename: 'data.bin', content_type: 'application/octet-stream'
+        end
+
+        file_part = builder.to_h[:parts].last
+        expect(file_part[:filename]).to eq('data.bin')
+        expect(file_part[:content_type]).to eq('application/octet-stream')
+      end
+    end
+  end
+
+  describe Philiprehberger::Multipart::Part do
+    describe '#text?' do
+      it 'is true for parts without a filename' do
+        expect(described_class.new(:name, 'Alice').text?).to be(true)
+      end
+
+      it 'is false for file parts' do
+        expect(described_class.new(:avatar, 'bytes', filename: 'avatar.png').text?).to be(false)
+      end
+    end
+
+    describe '#size' do
+      it 'returns the byte size of the value' do
+        part = described_class.new(:body, 'café')
+        expect(part.size).to eq(5)
+      end
+    end
   end
 end
